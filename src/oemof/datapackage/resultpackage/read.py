@@ -54,7 +54,7 @@ class ImportResults:
 
             # Sonderfall: objective
             if key == "objective":
-                df = pd.read_csv(fpath)
+                df = pd.read_csv(fpath, index_col=[0])
                 if df.empty:
                     self._data["objective"] = None
                 else:
