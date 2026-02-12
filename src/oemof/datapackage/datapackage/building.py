@@ -337,7 +337,7 @@ def infer_metadata(
 
     p = Package()
     p.descriptor["name"] = package_name
-    p.descriptor["profile"] = "datapackage-data-package"
+    p.descriptor["profile"] = "tabular-data-package"
     p.descriptor["oemof_datapackage_version"] = oemof_datapackage_version
     p.commit()
     if not os.path.exists("resources"):
@@ -481,7 +481,7 @@ def package_from_resources(resource_path, output_path, clean=True):
     """
     p = Package()
 
-    p.descriptor["profile"] = "datapackage-data-package"
+    p.descriptor["profile"] = "tabular-data-package"
     p.commit()
 
     for f in sorted(os.listdir(resource_path)):
