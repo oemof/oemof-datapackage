@@ -285,6 +285,8 @@ def infer_metadata_from_data(
     path = os.path.abspath(path)
     p0 = Package(base_path=path)
     p0.infer(os.path.join(path, "**" + os.sep + "*.csv"))
+    for r in p0.resources:
+        r.descriptor["encoding"] = "utf-8"
     p0.commit()
     p0.save(os.path.join(path, metadata_filename))
 
@@ -371,6 +373,9 @@ def infer_metadata(
             )
             r.infer()
             r.descriptor["schema"]["primaryKey"] = "name"
+            if r.descriptor["encoding"] != "utf-8":
+                warnings.warn(f"Encoding of the resource {r.name} wasn't 'utf-8' but {r.descriptor['encoding']}, now forcing it to 'utf-8'")
+                r.descriptor["encoding"] = "utf-8"
 
             r.descriptor["schema"]["foreignKeys"] = []
 
@@ -393,6 +398,16 @@ def infer_metadata(
                 {"path": str(pathlib.PurePosixPath("data", "sequences", f))}
             )
             r.infer()
+            if r.descriptor["encoding"] != "utf-8":
+                warnings.warn(f"Encoding of the resource {r.name} wasn't 'utf-8' but {r.descriptor['encoding']}, now forcing it to 'utf-8'")
+                r.descriptor["encoding"] = "utf-8"
+
+            # read the column names from the file directly because of german special characters which fail to
+            # be encoded correctly by the resource's `read()` method
+            df = pd.read_csv(str(pathlib.PurePosixPath("data", "sequences", f)))
+            for i, col_name in enumerate(df.columns):
+                logging.info(r.descriptor["schema"]["fields"][i]["name"], "replaced by ", col_name)
+                r.descriptor["schema"]["fields"][i]["name"] = col_name
             r.commit()
             r.save(
                 pathlib.PurePosixPath("resources", f.replace(".csv", ".json"))
