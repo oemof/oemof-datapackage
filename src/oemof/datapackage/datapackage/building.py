@@ -15,7 +15,6 @@ from urllib.parse import urlparse
 import pandas as pd
 import paramiko
 import tableschema
-import toml
 from datapackage import Package
 from datapackage import Resource
 
