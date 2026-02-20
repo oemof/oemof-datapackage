@@ -35,7 +35,7 @@ project = 'oemof.datapackage'
 year = '2025'
 author = 'Stephan Günther, Jann Launer, Julian Endres, Hendrik Huyskens'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.0.6dev'
+version = release = '0.0.6b1'
 
 pygments_style = 'trac'
 templates_path = ['.']

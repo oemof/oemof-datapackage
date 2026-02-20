@@ -1,8 +1,11 @@
 import json
-from pathlib import Path
-from typing import Any, Dict, List
-from zipfile import ZipFile, ZIP_DEFLATED
 import tempfile
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import List
+from zipfile import ZIP_DEFLATED
+from zipfile import ZipFile
 
 import pandas as pd
 
@@ -104,7 +107,8 @@ def export_results_to_datapackage(
     results: Any, base_path: str | Path, zip: bool = False
 ) -> None:
     """
-    Exportiert ein oemof.solph.Results-Objekt als datapackage-ähnliche Struktur.
+    Exportiert ein oemof.solph.Results-Objekt als datapackage-ähnliche
+    Struktur.
 
     Variante ohne ZIP (zip=False, Standard)
     ---------------------------------------
@@ -145,7 +149,6 @@ def export_results_to_datapackage(
     else:
         base_path.mkdir(parents=True, exist_ok=True)
         _export_results_to_dir(results, base_path)
-
 
 
 def _export_results_to_dir(results: Any, base_path: Path) -> None:

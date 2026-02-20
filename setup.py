@@ -73,13 +73,11 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "datapackage>=1.5.1",
-        "cchardet",
         "tableschema",
         "oemof.solph",
         "pandas>=0.22",
         "oemof.network",
         "paramiko",
-        "toml",
         "numpy"
     ],
     extras_require={
