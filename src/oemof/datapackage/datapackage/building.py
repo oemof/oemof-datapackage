@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 import pandas as pd
 import paramiko
 import tableschema
+import tomllib
 from datapackage import Package
 from datapackage import Resource
 
@@ -775,8 +776,8 @@ def read_build_config(file="build.toml"):
         String with name of config file
     """
     try:
-        config = toml.load(file)
-
+        with open(file, "rb") as f:
+            config = tomllib.load(f)
         # create paths
         if config.get("directories"):
             config["directories"] = {
