@@ -67,7 +67,8 @@ class ImportResults:
                 continue
 
             # alle anderen Keys → DataFrame
-            # header_rows gibt an, wie viele Kopfzeilen für die Spalten existieren
+            # header_rows gibt an, wie viele Kopfzeilen für die Spalten
+            # existieren
             if header_rows >= 2:
                 header = list(range(header_rows))
             else:

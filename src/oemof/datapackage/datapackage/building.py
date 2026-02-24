@@ -308,7 +308,6 @@ def infer_metadata_from_data(
 def infer_metadata(
     package_name="default-name",
     keep_resources=False,
-    foreign_keys=None,
     path=None,
     metadata_filename="datapackage.json",
 ):
@@ -322,10 +321,6 @@ def infer_metadata(
         Flag indicating of the resources meta data json-files should be kept
         after main datapackage.json is created. The resource meta data will
         be stored in the `resources` directory.
-    foreign_keys: dict
-        Dictionary with foreign key specification. Keys for dictionary are:
-        'bus', 'profile', 'from_to_bus'. Values are list with
-        strings with the name of the resources
     path: string
         Absolute path to root-folder of the datapackage
     metadata_filename: basestring
@@ -375,7 +370,8 @@ def infer_metadata(
             r.descriptor["schema"]["primaryKey"] = "name"
             if r.descriptor["encoding"] != "utf-8":
                 warnings.warn(
-                    f"Encoding of the resource {r.name} wasn't 'utf-8' but {r.descriptor['encoding']}, now forcing it to 'utf-8'"
+                    f"Encoding of the resource {r.name} wasn't 'utf-8' but "
+                    f"{r.descriptor['encoding']}, now forcing it to 'utf-8'"
                 )
                 r.descriptor["encoding"] = "utf-8"
 
@@ -402,11 +398,13 @@ def infer_metadata(
             r.infer()
             if r.descriptor["encoding"] != "utf-8":
                 warnings.warn(
-                    f"Encoding of the resource {r.name} wasn't 'utf-8' but {r.descriptor['encoding']}, now forcing it to 'utf-8'"
+                    f"Encoding of the resource {r.name} wasn't 'utf-8' but "
+                    f"{r.descriptor['encoding']}, now forcing it to 'utf-8'"
                 )
                 r.descriptor["encoding"] = "utf-8"
 
-            # read the column names from the file directly because of german special characters which fail to
+            # read the column names from the file directly because of german
+            # special characters which fail to
             # be encoded correctly by the resource's `read()` method
             df = pd.read_csv(
                 str(pathlib.PurePosixPath("data", "sequences", f))
