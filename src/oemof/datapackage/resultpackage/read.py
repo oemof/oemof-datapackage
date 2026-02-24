@@ -79,9 +79,7 @@ class ImportResults:
                     fpath, header=header, index_col=0, parse_dates=[0]
                 )
             else:
-                df = pd.read_csv(
-                    fpath, header=header, index_col=0
-                )
+                df = pd.read_csv(fpath, header=header, index_col=0)
 
             self._data[key] = df
 

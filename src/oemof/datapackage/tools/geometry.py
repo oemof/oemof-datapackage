@@ -10,6 +10,7 @@ Copyright 2015-2017 Frankfurt Institute for Advanced Studies
 * simplify_poly()
 * nuts()
 """
+
 import os
 from collections import OrderedDict
 from functools import partial
