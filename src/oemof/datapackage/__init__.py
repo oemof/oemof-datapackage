@@ -1,4 +1,4 @@
-__version__ = 0.0.6b2"
+__version__ = "0.0.6b2"
 __project__ = "oemof.datapackage"
 
 

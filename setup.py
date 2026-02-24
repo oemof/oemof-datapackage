@@ -24,7 +24,7 @@ def read(*names, **kwargs):
 
 
 setup(
-    name="oemof.datapackage",
+    name="oemof-datapackage",
     version="0.0.6b2",
     license="BSD-3-Clause",
     description="Load oemof energy systems from datapackage data sources.",
