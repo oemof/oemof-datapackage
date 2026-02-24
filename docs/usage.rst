@@ -11,7 +11,7 @@ Background
 =============
 
 The underlying concept of **oemof-datapackage** is the
-`oemof solph  <https://oemof.readthedocs.io/en/stable/oemof_solph.html>`_
+`oemof solph  <https://oemof-solph.readthedocs.io/en/stable/>`_
 package.
 The Open Energy Modelling Framework (oemof) 	is based on a graph structure at its core.
 In addition it provides an optimization model generator to construct individual
@@ -56,11 +56,13 @@ based on the datapackage standard (see: Reproducible Workflows).
 How to create a Datapackage
 -----------------------------
 
-We adhere to the frictionless `(datapackage) datapackage standard  <https://frictionlessdata.io/specs/datapackage-data-package/>`_.
+We adhere to the frictionless
+`(datapackage) datapackage standard  <https://specs.frictionlessdata.io/>`_.
 On top of that structure we add our own logic. We require at least two things:
 
-	1. A directory named *data* containing at least one sub-folder called *elements*
-	(optionally it may contain a directory *sequences*, *geometries* and/or *constraints*. Of
+	1. A directory named *data* containing at least one sub-folder called
+    *elements* (optionally it may contain a directory *sequences*,
+    *geometries* and/or *constraints*. Of
 	course you may add any other directory, data or other information.)
 
 	2. A valid meta-data `.json` file for the datapackage

@@ -6,6 +6,7 @@ import pathlib
 import shutil
 import sys
 import tarfile
+import tomllib
 import urllib.request
 import warnings
 import zipfile
@@ -15,7 +16,6 @@ from urllib.parse import urlparse
 import pandas as pd
 import paramiko
 import tableschema
-import toml
 from datapackage import Package
 from datapackage import Resource
 
@@ -285,6 +285,8 @@ def infer_metadata_from_data(
     path = os.path.abspath(path)
     p0 = Package(base_path=path)
     p0.infer(os.path.join(path, "**" + os.sep + "*.csv"))
+    for r in p0.resources:
+        r.descriptor["encoding"] = "utf-8"
     p0.commit()
     p0.save(os.path.join(path, metadata_filename))
 
@@ -306,7 +308,6 @@ def infer_metadata_from_data(
 def infer_metadata(
     package_name="default-name",
     keep_resources=False,
-    foreign_keys=None,
     path=None,
     metadata_filename="datapackage.json",
 ):
@@ -320,10 +321,6 @@ def infer_metadata(
         Flag indicating of the resources meta data json-files should be kept
         after main datapackage.json is created. The resource meta data will
         be stored in the `resources` directory.
-    foreign_keys: dict
-        Dictionary with foreign key specification. Keys for dictionary are:
-        'bus', 'profile', 'from_to_bus'. Values are list with
-        strings with the name of the resources
     path: string
         Absolute path to root-folder of the datapackage
     metadata_filename: basestring
@@ -337,7 +334,7 @@ def infer_metadata(
 
     p = Package()
     p.descriptor["name"] = package_name
-    p.descriptor["profile"] = "datapackage-data-package"
+    p.descriptor["profile"] = "tabular-data-package"
     p.descriptor["oemof_datapackage_version"] = oemof_datapackage_version
     p.commit()
     if not os.path.exists("resources"):
@@ -371,6 +368,12 @@ def infer_metadata(
             )
             r.infer()
             r.descriptor["schema"]["primaryKey"] = "name"
+            if r.descriptor["encoding"] != "utf-8":
+                warnings.warn(
+                    f"Encoding of the resource {r.name} wasn't 'utf-8' but "
+                    f"{r.descriptor['encoding']}, now forcing it to 'utf-8'"
+                )
+                r.descriptor["encoding"] = "utf-8"
 
             r.descriptor["schema"]["foreignKeys"] = []
 
@@ -393,6 +396,26 @@ def infer_metadata(
                 {"path": str(pathlib.PurePosixPath("data", "sequences", f))}
             )
             r.infer()
+            if r.descriptor["encoding"] != "utf-8":
+                warnings.warn(
+                    f"Encoding of the resource {r.name} wasn't 'utf-8' but "
+                    f"{r.descriptor['encoding']}, now forcing it to 'utf-8'"
+                )
+                r.descriptor["encoding"] = "utf-8"
+
+            # read the column names from the file directly because of german
+            # special characters which fail to
+            # be encoded correctly by the resource's `read()` method
+            df = pd.read_csv(
+                str(pathlib.PurePosixPath("data", "sequences", f))
+            )
+            for i, col_name in enumerate(df.columns):
+                logging.info(
+                    r.descriptor["schema"]["fields"][i]["name"],
+                    "replaced by ",
+                    col_name,
+                )
+                r.descriptor["schema"]["fields"][i]["name"] = col_name
             r.commit()
             r.save(
                 pathlib.PurePosixPath("resources", f.replace(".csv", ".json"))
@@ -481,7 +504,7 @@ def package_from_resources(resource_path, output_path, clean=True):
     """
     p = Package()
 
-    p.descriptor["profile"] = "datapackage-data-package"
+    p.descriptor["profile"] = "tabular-data-package"
     p.commit()
 
     for f in sorted(os.listdir(resource_path)):
@@ -629,12 +652,8 @@ def download_data(url, directory="cache", unzip_file=None, **kwargs):
             _ftp(path, copypath, hostname=netloc, **kwargs)
 
         else:
-            raise ValueError(
-                "Cannot download data. Not supported scheme \
-                             in {}.".format(
-                    url
-                )
-            )
+            raise ValueError("Cannot download data. Not supported scheme \
+                             in {}.".format(url))
 
     if unzip_file is not None:
 
@@ -735,8 +754,7 @@ def input_filepath(file, directory="archive/"):
     file_path = os.path.join(directory, file)
 
     if not os.path.exists(file_path):
-        raise FileNotFoundError(
-            """File with name
+        raise FileNotFoundError("""File with name
 
             {}
 
@@ -744,10 +762,7 @@ def input_filepath(file, directory="archive/"):
             the sources listed and store it in the directory:
 
             {}.
-            """.format(
-                file_path, directory
-            )
-        )
+            """.format(file_path, directory))
 
     return file_path
 
@@ -761,8 +776,8 @@ def read_build_config(file="build.toml"):
         String with name of config file
     """
     try:
-        config = toml.load(file)
-
+        with open(file, "rb") as f:
+            config = tomllib.load(f)
         # create paths
         if config.get("directories"):
             config["directories"] = {
