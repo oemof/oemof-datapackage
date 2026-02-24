@@ -1,3 +1,0 @@
-name;type;capacity;bus;profile;output_parameters;input_parameters;carrier;tech;amount;marginal_cost
-coal;dispatchable;100000;bus0;dispatchable-profile;{"min": 0};{};coal;st;Infinity;marginal-cost-coal
-demand;load;Infinity;bus0;electricity-load-profile;{};{};electricity;load;10;
