@@ -73,13 +73,11 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "chardet>=5.0,<6.0",
-        "urllib3>=1.26,<3.0",
         "datapackage>=1.5.1",
         "tableschema",
         "oemof.solph",
         "pandas>=0.22",
         "oemof.network",
-        "paramiko",
         "numpy",
     ],
     extras_require={
