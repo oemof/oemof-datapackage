@@ -41,7 +41,7 @@ def get_schema_fieldnames(
 def dialect_from_resource(res: Dict[str, Any]) -> Dict[str, Any]:
     d = (res.get("dialect") or {}) if isinstance(res.get("dialect"), dict) else {}
     return {
-        "delimiter": d.get("delimiter", ";"),
+        "delimiter": d.get("delimiter", ","),
         "quotechar": d.get("quoteChar", d.get("quotechar", '"')),
         "doublequote": d.get("doubleQuote", True),
         "escapechar": d.get("escapeChar", "\n"),

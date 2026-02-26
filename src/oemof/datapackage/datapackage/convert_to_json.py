@@ -35,7 +35,7 @@ def csv_reader_for_resource(
     fp, resource: Dict[str, Any], *, force_schema_headers: bool = False
 ):
     dialect = resource.get("dialect", {}) or {}
-    delimiter = dialect.get("delimiter", ";")
+    delimiter = dialect.get("delimiter", ",")
     quotechar = dialect.get("quoteChar") or dialect.get("quotechar") or '"'
     doublequote = dialect.get("doubleQuote") if "doubleQuote" in dialect else True
     escapechar = dialect.get("escapeChar") or None
