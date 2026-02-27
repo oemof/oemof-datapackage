@@ -78,6 +78,7 @@ def write_csv(
 def rebuild_dp_from_json(
     src_file: Path, out_dir: Path, *, overwrite: bool = False
 ) -> Dict[str, Any]:
+
     with src_file.open("r", encoding="utf-8") as f:
         payload = json.load(f)
 
@@ -133,7 +134,7 @@ def rebuild_dp_from_json(
     with dp_out.open("w", encoding="utf-8") as f:
         json.dump(pkg, f, ensure_ascii=False, indent=4)
 
-    return str(out_dir)
+    return out_dir
 
 
 def main():
