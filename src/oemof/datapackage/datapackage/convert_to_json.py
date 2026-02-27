@@ -69,7 +69,7 @@ def csv_reader_for_resource(
 
 
 def export_dp_to_json(
-    package_dir: Path, out_dir: Path, *, no_headers: bool = False
+    package_dir: Path, out_dir: Path = None, no_headers: bool = False
 ) -> Dict[str, Any]:
     """
     Export a Frictionless Data Package (CSV resources) into a single JSON file.
@@ -97,9 +97,9 @@ def export_dp_to_json(
 
     Returns
     -------
-    Dict[str, str]
-        A dict with key ``"output"`` pointing to the absolute path of the written file
-        (``datapackage_export.json`` inside ``out_dir``).
+    str
+        The absolute path of the written file (``datapackage_export.json`` inside ``out_dir``)
+        if out_dir is not None, the JSONified datapackage otherwise.
 
     Notes
     -----
@@ -129,7 +129,7 @@ def export_dp_to_json(
     >>> import json
     >>> pkg = json.loads(Path("my_pkg/datapackage.json").read_text(encoding="utf-8"))
     >>> export_dp_to_json(Path("my_pkg"), Path("out"))
-    {'output': '/abs/path/out/datapackage_export.json'}
+    '/abs/path/out/datapackage_export.json'
     """
 
     dp_path = package_dir / "datapackage.json"
@@ -138,7 +138,6 @@ def export_dp_to_json(
     with dp_path.open("r", encoding="utf-8") as f:
         pkg = json.load(f)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
     data: Dict[str, List[Dict[str, Any]]] = {}
     resources = pkg.get("resources") or []
     for res in resources:
@@ -158,10 +157,17 @@ def export_dp_to_json(
                 for row in reader:
                     rows.append({str(k): v for k, v in row.items()})
         data[name] = rows
-    output_path = out_dir / "datapackage_export.json"
-    with output_path.open("w", encoding="utf-8") as out:
-        json.dump({"metadata": pkg, "data": data}, out, ensure_ascii=False, indent=4)
-    return str(output_path)
+
+    if out_dir is not None:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        output_path = out_dir / "datapackage_export.json"
+        with output_path.open("w", encoding="utf-8") as out:
+            json.dump({"metadata": pkg, "data": data}, out, ensure_ascii=False, indent=4)
+        answer = str(output_path)
+    else:
+        # import pdb;pdb.set_trace()
+        answer = json.dumps({"metadata": pkg, "data": data}, ensure_ascii=False)
+    return answer
 
 
 def main():
