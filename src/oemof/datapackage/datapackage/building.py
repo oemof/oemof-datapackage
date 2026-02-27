@@ -6,7 +6,6 @@ import pathlib
 import shutil
 import sys
 import tarfile
-import tomllib
 import urllib.request
 import warnings
 import zipfile
@@ -710,43 +709,6 @@ def timeindex(year, periods=8760, freq="H"):
     return idx
 
 
-def initialize(config, directory="."):
-    """Initialize datapackage by reading config file and creating required
-    directories (data/elements, data/sequences etc.) if directories are
-    not specified in the config file, the default directory setup up
-    will be used.
-
-    """
-    sub_directories = {
-        "elements": "data/elements",
-        "sequences": "data/sequences",
-        "geometries": "data/geometries",
-    }
-
-    if not config:
-        try:
-            default = "config.json"
-            config = read_build_config(default)
-        except FileNotFoundError as e:
-            message = (
-                "{}\n"
-                "Cause:\n"
-                "Default path `{}` of config file could not be found!"
-            ).format(e, default)
-            raise FileNotFoundError(message).with_traceback(
-                sys.exc_info()[2]
-            ) from None
-
-    sub_directories.update(config.get("sub-directories", {}))
-
-    for subdir in sub_directories.values():
-        try:
-            os.makedirs(os.path.join(directory, subdir))
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                raise
-
-    return sub_directories
 
 
 def input_filepath(file, directory="archive/"):
@@ -767,30 +729,6 @@ def input_filepath(file, directory="archive/"):
     return file_path
 
 
-def read_build_config(file="build.toml"):
-    """Read config build file in toml format
-
-    Parameters
-    ----------
-    file: string
-        String with name of config file
-    """
-    try:
-        with open(file, "rb") as f:
-            config = tomllib.load(f)
-        # create paths
-        if config.get("directories"):
-            config["directories"] = {
-                k: os.path.join(os.getcwd(), v)
-                for k, v in config["directories"].items()
-            }
-    except Exception as e:
-        message = (
-            "{}\nCause:\nBuild config file '{}' could not be read."
-        ).format(e, file)
-        raise type(e)(message).with_traceback(sys.exc_info()[2]) from None
-
-    return config
 
 
 def read_sequences(filename, directory="data/sequences"):
