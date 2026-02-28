@@ -78,9 +78,27 @@ def write_csv(
 def rebuild_dp_from_json(
     src_file: Path, out_dir: Path, *, overwrite: bool = False
 ) -> Dict[str, Any]:
+    """
 
-    with src_file.open("r", encoding="utf-8") as f:
-        payload = json.load(f)
+    Parameters
+    ----------
+    src_file: Path or dict
+        path to a jsonified datapackage or jsonified datapackage as dict
+    out_dir: Path
+        path where the recreated datapackage should be saved
+    overwrite: bool, default False
+
+    Returns
+    -------
+    The path of the datapackage.json file within the recreated datapackage
+    """
+
+
+    if isinstance(src_file,dict):
+        payload = src_file
+    else:
+        with src_file.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
 
     pkg = payload.get("metadata") or {}
     data = payload.get("data") or {}
