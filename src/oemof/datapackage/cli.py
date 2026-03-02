@@ -4,8 +4,8 @@ Module that contains the command line app.
 """
 
 import collections
-import copy
 
+import pandas as pd
 from datapackage import Package
 from datapackage import exceptions
 
@@ -13,10 +13,6 @@ try:
     import click
 except ImportError:
     raise ImportError("Need to install click to use cli!")
-
-import pandas as pd
-
-from .datapackage import building
 
 
 def update(d, u):

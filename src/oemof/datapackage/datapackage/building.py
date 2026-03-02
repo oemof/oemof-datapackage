@@ -5,11 +5,9 @@ import os
 import pathlib
 import shutil
 import sys
-import tarfile
 import tomllib
 import warnings
-import zipfile
-from urllib.parse import urlparse
+
 import pandas as pd
 import tableschema
 from datapackage import Package
@@ -520,174 +518,6 @@ def package_from_resources(resource_path, output_path, clean=True):
     p.save(os.path.join(output_path, "datapackage.json"))
 
 
-def _ftp(remotepath, localpath, hostname, username=None, passwd=""):
-    """Download data with FTP
-
-    Parameters
-    ----------
-    remotepath: str
-        The remote file to copy.
-    localpath: str
-        The destination path on localhost.
-    hostname: str
-        The server to connect to.
-    username: str
-        The username to authenticate as.
-    passwd: str
-        The password to authenticate with.
-    """
-
-    ftp = FTP(hostname)
-
-    if username:
-        ftp.login(user=username, passwd=passwd)
-    else:
-        ftp.login()
-
-    ftp.retrbinary("RETR " + remotepath, open(localpath, "wb").write)
-    ftp.quit()
-
-    return
-
-
-def _sftp(
-    remotepath, localpath, hostname="", username="rutherford", password=""
-):
-    """Download data with SFTP
-
-    Parameters
-    ----------
-    remotepath: str
-        The remote file to copy.
-    localpath: str
-        The destination path on localhost.
-    hostname: str
-        The server to connect to.
-    username:
-        The username to authenticate as.
-    """
-
-    client = paramiko.SSHClient()
-    client.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
-
-    client.connect(hostname=hostname, username=username, password=password)
-
-    sftp = client.open_sftp()
-    sftp.get(remotepath, localpath)
-
-    sftp.close()
-    client.close()
-
-    return
-
-
-def _http(url, path):
-    """Download data with HTTP
-
-    Parameters
-    ----------
-    url: str
-        Url of file to be downloaded.
-    path: str
-        The destination path on localhost.
-    """
-
-    user_agent = (
-        "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) "
-        "Gecko/2009021910 "
-        "Firefox/3.0.7"
-    )
-    headers = {"User-Agent": user_agent}
-    request = urllib.request.Request(url, None, headers)
-
-    f = urllib.request.urlopen(request)
-    data = f.read()
-    with open(path, "wb") as code:
-        code.write(data)
-
-    return
-
-
-def download_data(url, directory="cache", unzip_file=None, **kwargs):
-    """
-    Downloads data and stores it in specified directory
-
-    Parameters
-    ----------
-    url: str
-        Url of file to be downloaded.
-    directory: str
-        Name of directory where to store the downloaded data.
-        Default is 'cache'-
-    unzip_file: str
-        Regular or directory file name to be extracted from zip source.
-    kwargs:
-        Additional keyword arguments.
-    """
-
-    scheme, netloc, path, params, query, fragment = urlparse(url)
-
-    if not unzip_file:
-        filepath = os.path.join(directory, os.path.basename(path))
-        copypath = filepath
-    else:
-        filepath = os.path.join(directory, unzip_file)
-        copypath = os.path.join(directory, os.path.basename(path))
-
-    if os.path.exists(filepath):
-        return filepath
-
-    else:
-        if scheme in ["http", "https"]:
-            _http(url, copypath)
-
-        elif scheme == "sftp":
-            _sftp(path, copypath, hostname=netloc, **kwargs)
-
-        elif scheme == "ftp":
-            _ftp(path, copypath, hostname=netloc, **kwargs)
-
-        else:
-            raise ValueError("Cannot download data. Not supported scheme \
-                             in {}.".format(url))
-
-    if unzip_file is not None:
-
-        def member(x):
-            return x.startswith(unzip_file.split("/")[0])
-
-        if copypath.endswith(".zip"):
-            zipped = zipfile.ZipFile(copypath, "r")
-            if unzip_file.endswith("/"):
-                zipped.extractall(
-                    filepath, members=list(filter(member, zipped.namelist()))
-                )
-            elif unzip_file == "":
-                zipped.extractall(directory)
-            else:
-                zipped.extract(unzip_file, directory)
-
-            zipped.close()
-
-        elif copypath.endswith(".tar.gz"):
-            tar = tarfile.open(copypath, "r:gz")
-            if unzip_file.endswith("/"):
-                tar.extractall(
-                    filepath,
-                    members=list(
-                        filter(member, [t.name for t in tar.getmembers()])
-                    ),
-                )
-            else:
-                tar.extract(unzip_file, directory)
-
-            tar.close()
-
-        os.remove(copypath)
-
-    return filepath
-
-
 def timeindex(year, periods=8760, freq="H"):
     """Create pandas datetimeindex.
 
@@ -720,8 +550,8 @@ def initialize(config, directory="."):
     }
 
     if not config:
+        default = "config.json"
         try:
-            default = "config.json"
             config = read_build_config(default)
         except FileNotFoundError as e:
             message = (
