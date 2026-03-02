@@ -39,11 +39,17 @@ Overview
 
 .. end-badges
 
+============
+Experimental
+============
+
 Load oemof energy systems from datapackage data sources.
 
 We plan to use the datapackage idea for oemof-solph without being bound to the internal facade structure of oemof-tabular.
 
 If we do this within the tabular structure, there is a risk of breaking the package for others. That is why we decided to fork the project first and then consider later how we can bring the results back together. We don't know how many people use tabular's internal classes and why. There are now more options in oemof-solph and other repositories exist that offer derived components. So the gap that tabular once filled no longer exists to the same extent. But the datapackage itself is a great idea that should be accessable without the tabular structure.
+
+**This package is not for productive use. If you are interested, please contact us.**
 
 * Free software: BSD 3-Clause License
 
