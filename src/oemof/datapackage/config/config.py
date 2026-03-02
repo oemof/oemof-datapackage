@@ -5,5 +5,5 @@ supported_oemof_datapackage_versions = [
     "0.0.3",
     "0.0.4",
     "0.0.5",
-    "v0.0.6b2",
+    "v0.0.6b3",
 ]
