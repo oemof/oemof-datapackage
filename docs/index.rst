@@ -8,9 +8,7 @@ Contents
    readme
    installation
    usage
-   facades
    reference/index
-   tutorials/index
    contributing
    authors
    changelog

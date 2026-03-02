@@ -24,8 +24,8 @@ def read(*names, **kwargs):
 
 
 setup(
-    name="oemof.datapackage",
-    version="0.0.6.dev0",
+    name="oemof-datapackage",
+    version="0.0.6b2",
     license="BSD-3-Clause",
     description="Load oemof energy systems from datapackage data sources.",
     long_description="%s\n%s"
@@ -73,13 +73,11 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "chardet>=5.0,<6.0",
-        "urllib3>=1.26,<3.0",
         "datapackage>=1.5.1",
         "tableschema",
         "oemof.solph",
         "pandas>=0.22",
         "oemof.network",
-        "paramiko",
         "numpy",
     ],
     extras_require={

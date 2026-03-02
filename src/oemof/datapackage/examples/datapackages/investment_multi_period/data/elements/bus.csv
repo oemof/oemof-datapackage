@@ -1,5 +1,0 @@
-name;type;balanced
-bus0;bus;true
-bus1;bus;true
-heat-bus;bus;false
-gas-bus;bus;false

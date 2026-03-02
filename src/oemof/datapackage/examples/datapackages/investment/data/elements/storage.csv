@@ -1,2 +1,0 @@
-name;carrier;tech;storage_capacity;capacity;capacity_cost;invest_relation_output_capacity;invest_relation_input_output;expandable;type;bus
-el-storage;lithium;battery;100;0;10;0.2;1;true;storage;bus0

@@ -60,10 +60,10 @@ We adhere to the frictionless
 `(datapackage) datapackage standard  <https://specs.frictionlessdata.io/>`_.
 On top of that structure we add our own logic. We require at least two things:
 
-	1. A directory named *data* containing at least one sub-folder called
+    1. A directory named *data* containing at least one sub-folder called
     *elements* (optionally it may contain a directory *sequences*,
-    *geometries* and/or *constraints*. Of
-	course you may add any other directory, data or other information.)
+    *geometries* and/or *constraints*. Of course you may add any other
+    directory, data or other information.)
 
 	2. A valid meta-data `.json` file for the datapackage
 

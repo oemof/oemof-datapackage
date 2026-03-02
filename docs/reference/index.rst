@@ -3,7 +3,7 @@ API Reference
 =============
 
 oemof.datapackage.datapackage package
-=================================
+=====================================
 
 .. automodule:: oemof.datapackage.datapackage
     :members:
@@ -14,7 +14,7 @@ Submodules
 ----------
 
 oemof.datapackage.datapackage.aggregation module
---------------------------------------------
+------------------------------------------------
 
 .. automodule:: oemof.datapackage.datapackage.aggregation
     :members:
@@ -22,7 +22,7 @@ oemof.datapackage.datapackage.aggregation module
     :show-inheritance:
 
 oemof.datapackage.datapackage.building module
------------------------------------------
+---------------------------------------------
 
 .. automodule:: oemof.datapackage.datapackage.building
     :members:
@@ -30,7 +30,7 @@ oemof.datapackage.datapackage.building module
     :show-inheritance:
 
 oemof.datapackage.datapackage.processing module
--------------------------------------------
+-----------------------------------------------
 
 .. automodule:: oemof.datapackage.datapackage.processing
     :members:
@@ -38,7 +38,7 @@ oemof.datapackage.datapackage.processing module
     :show-inheritance:
 
 oemof.datapackage.datapackage.reading module
-----------------------------------------
+--------------------------------------------
 
 .. automodule:: oemof.datapackage.datapackage.reading
     :members:
@@ -46,7 +46,7 @@ oemof.datapackage.datapackage.reading module
     :show-inheritance:
 
 oemof.datapackage.tools package
-===========================
+===============================
 
 .. automodule:: oemof.datapackage.tools
     :members:
@@ -57,7 +57,7 @@ Submodules
 ----------
 
 oemof.datapackage.tools.geometry module
------------------------------------
+---------------------------------------
 
 .. automodule:: oemof.datapackage.tools.geometry
     :members:
