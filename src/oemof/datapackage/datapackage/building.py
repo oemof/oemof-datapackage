@@ -709,8 +709,6 @@ def timeindex(year, periods=8760, freq="H"):
     return idx
 
 
-
-
 def input_filepath(file, directory="archive/"):
     """ """
     file_path = os.path.join(directory, file)
@@ -727,8 +725,6 @@ def input_filepath(file, directory="archive/"):
             """.format(file_path, directory))
 
     return file_path
-
-
 
 
 def read_sequences(filename, directory="data/sequences"):

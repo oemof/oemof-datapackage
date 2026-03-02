@@ -95,7 +95,5 @@ setup(
             "dp_to_json = oemof.datapackage.datapackage.convert_to_json:main",
             "json_to_dp = oemof.datapackage.datapackage.convert_from_json:main",
         ],
-
-
     },
 )

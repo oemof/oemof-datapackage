@@ -31,7 +31,6 @@ def update(d, u):
 scenarios = {}
 
 
-
 def _test(ctx, package):
     """ """
     p = Package(package)
