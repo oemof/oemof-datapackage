@@ -550,8 +550,8 @@ def initialize(config, directory="."):
     }
 
     if not config:
+        default = "config.json"
         try:
-            default = "config.json"
             config = read_build_config(default)
         except FileNotFoundError as e:
             message = (

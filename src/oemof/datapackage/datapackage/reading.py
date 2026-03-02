@@ -598,7 +598,6 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
 
     facades = {}
     for r in package.resources:
-        print(r.descriptor)
         if all(
             re.match(r"^data/elements/.*$", p)
             for p in listify(r.descriptor["path"], 1)

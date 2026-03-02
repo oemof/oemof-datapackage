@@ -87,5 +87,11 @@ setup(
         "aggregation": ["tsam"],
         "geometry": ["shapely", "scipy", "pyproj", "geojson", "pyshp"],
     },
-    entry_points={"console_scripts": ["ota = oemof.datapackage.cli:main"]},
+    entry_points={
+        "console_scripts": [
+            "ota = oemof.datapackage.cli:main",
+            "dp_to_json = oemof.datapackage.datapackage.convert_to_json:main",
+            "json_to_dp = oemof.datapackage.datapackage.convert_from_json:main",
+        ],
+    },
 )
