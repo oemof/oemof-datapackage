@@ -75,12 +75,15 @@ class ImportResults:
                 header = 0
 
             # sequences: Index als Datum parsen
-            if kind == "sequence":
-                df = pd.read_csv(
-                    fpath, header=header, index_col=0, parse_dates=[0]
-                )
-            else:
-                df = pd.read_csv(fpath, header=header, index_col=0)
+            try:
+                if kind == "sequence":
+                    df = pd.read_csv(
+                        fpath, header=header, index_col=0, parse_dates=[0]
+                    )
+                else:
+                    df = pd.read_csv(fpath, header=header, index_col=0)
+            except pd.errors.EmptyDataError:
+                df = pd.DataFrame([])
 
             self._data[key] = df
 
