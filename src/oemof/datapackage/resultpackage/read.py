@@ -42,7 +42,7 @@ class ImportResults:
             key = res["name"]
             rel_path = res["path"]
             kind = res.get("kind", "element")  # 'sequence' oder 'element'
-            header_rows = int(res.get("header_rows", 1))
+            header_rows = res["dialect"].get("headerRows", [0])
 
             fpath = self.base_path / rel_path
 
@@ -66,22 +66,14 @@ class ImportResults:
                         self._data["objective"] = None
                 continue
 
-            # alle anderen Keys → DataFrame
-            # header_rows gibt an, wie viele Kopfzeilen für die Spalten
-            # existieren
-            if header_rows >= 2:
-                header = list(range(header_rows))
-            else:
-                header = 0
-
             # sequences: Index als Datum parsen
             try:
                 if kind == "sequence":
                     df = pd.read_csv(
-                        fpath, header=header, index_col=0, parse_dates=[0]
+                        fpath, header=header_rows, index_col=0, parse_dates=[0]
                     )
                 else:
-                    df = pd.read_csv(fpath, header=header, index_col=0)
+                    df = pd.read_csv(fpath, header=header_rows, index_col=0)
             except pd.errors.EmptyDataError:
                 df = pd.DataFrame([])
 
