@@ -552,6 +552,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         facade
         """
 
+        # TODO @PF pay attention to this with our own names
         yearly_values = ["fixed_costs", "marginal_costs"]
         periodical_values = [
             "capacity",
@@ -651,6 +652,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
     # TODO: Find concept how to deal with timeindices and clean up based on
     # concept
     lst = [idx for idx in timeindices.values()]
+    # import pdb;pdb.set_trace()
     if lst[1:] == lst[:-1]:
         # look for temporal resource and if present, take as timeindex from it
         if package.get_resource("temporal"):
@@ -673,6 +675,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         # if no temporal provided as resource, take the first timeindex
         # from dict
         else:
+            # TODO @PF here is the period of the ES set
             # look for periods resource and if present, take periods from it
             if package.get_resource("periods"):
                 es = cls(

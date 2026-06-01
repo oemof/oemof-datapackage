@@ -76,10 +76,10 @@ def _export_df_resource(
             "path": f"{rel_prefix}/{fname}",
             "kind": kind,
             "format": "csv",
-            "dialect":{
+            "dialect": {
                 "header": True,
                 "headerRows": header_rows,
-            }
+            },
         }
     )
 
@@ -181,10 +181,10 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
                         "path": "results/elements/objective.csv",
                         "kind": "element",
                         "format": "csv",
-                        "dialect":{
+                        "dialect": {
                             "header": True,
                             "headerRows": header_rows,
-                        }
+                        },
                     }
                 )
                 continue
@@ -207,9 +207,9 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
                     "path": f"results/elements/{fname}",
                     "kind": "element",
                     "format": "csv",
-                    "dialect":{
+                    "dialect": {
                         "header": False,
-                    }
+                    },
                 }
             )
             continue
