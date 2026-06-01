@@ -13,10 +13,6 @@ from typing import List
 from typing import Union
 
 
-def ensure_dir(p: Path) -> None:
-    p.mkdir(parents=True, exist_ok=True)
-
-
 def safe_join(base: Path, rel: Union[str, Path]) -> Path:
     """
     Join base with rel and ensure the result stays within base.
@@ -25,20 +21,6 @@ def safe_join(base: Path, rel: Union[str, Path]) -> Path:
     if not str(target).startswith(str(base.resolve())):
         raise ValueError(f"Unsafe path outside output directory: {rel}")
     return target
-
-
-def get_schema_fieldnames(
-    res: Dict[str, Any], sample_rows: List[Dict[str, Any]]
-) -> List[str]:
-    schema = res.get("schema")
-    if isinstance(schema, dict):
-        fields = schema.get("fields") or []
-        if fields and all(isinstance(f, dict) and "name" in f for f in fields):
-            return [f["name"] for f in fields]
-    # Fallback to keys from the first row
-    if sample_rows:
-        return list(sample_rows[0].keys())
-    return []
 
 
 def dialect_from_resource(res: Dict[str, Any]) -> Dict[str, Any]:
@@ -53,33 +35,6 @@ def dialect_from_resource(res: Dict[str, Any]) -> Dict[str, Any]:
         "doublequote": d.get("doubleQuote", True),
         "escapechar": d.get("escapeChar", "\n"),
     }
-
-
-def write_csv(
-    rows: List[Dict[str, Any]],
-    out_csv: Path,
-    fieldnames: List[str],
-    res_meta: Dict[str, Any],
-) -> int:
-    d = dialect_from_resource(res_meta)
-    count = 0
-    ensure_dir(out_csv.parent)
-    with out_csv.open("w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=fieldnames,
-            delimiter=d["delimiter"],
-            quotechar=d["quotechar"],
-            doublequote=d["doublequote"],
-            escapechar=d["escapechar"],
-        )
-        writer.writeheader()
-        for row in rows:
-            # normalize: ensure all headers exist; stringify keys
-            r = {str(k): row.get(k, "") for k in fieldnames}
-            writer.writerow(r)
-            count += 1
-    return count
 
 
 def rebuild_dp_from_json(
@@ -105,6 +60,8 @@ def rebuild_dp_from_json(
     else:
         with src_file.open("r", encoding="utf-8") as f:
             payload = json.load(f)
+
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     pkg = payload.get("metadata") or {}
     data = payload.get("data") or {}
@@ -140,11 +97,12 @@ def rebuild_dp_from_json(
             res["path"] = target_rel
 
         out_csv = safe_join(out_dir, target_rel)
-
         if out_csv.exists() and not overwrite:
             raise FileExistsError(
                 f"{out_csv} exists (pass --overwrite to replace)"
             )
+        else:
+            out_csv.parent.mkdir(parents=True, exist_ok=True)
 
         headers = get_schema_fieldnames(res, rows)
         write_csv(rows, out_csv, headers, res)
@@ -154,7 +112,6 @@ def rebuild_dp_from_json(
         updated_resources.append(res)
 
     # Write datapackage.json with updated paths/encodings
-    ensure_dir(out_dir)
     dp_out = out_dir / "datapackage.json"
 
     pkg["resources"] = updated_resources
