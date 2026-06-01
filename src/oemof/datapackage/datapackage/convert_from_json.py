@@ -12,6 +12,9 @@ from typing import Dict
 from typing import List
 from typing import Union
 
+import numpy as np
+import pandas as pd
+
 
 def safe_join(base: Path, rel: Union[str, Path]) -> Path:
     """
@@ -29,12 +32,7 @@ def dialect_from_resource(res: Dict[str, Any]) -> Dict[str, Any]:
         if isinstance(res.get("dialect"), dict)
         else {}
     )
-    return {
-        "delimiter": d.get("delimiter", ","),
-        "quotechar": d.get("quoteChar", d.get("quotechar", '"')),
-        "doublequote": d.get("doubleQuote", True),
-        "escapechar": d.get("escapeChar", "\n"),
-    }
+    return d
 
 
 def rebuild_dp_from_json(
@@ -104,8 +102,28 @@ def rebuild_dp_from_json(
         else:
             out_csv.parent.mkdir(parents=True, exist_ok=True)
 
-        headers = get_schema_fieldnames(res, rows)
-        write_csv(rows, out_csv, headers, res)
+        columns = rows["columns_names"]
+        M = len(columns)
+        if M > 0:
+            if isinstance(columns[0], list):
+                columns = pd.MultiIndex.from_tuples(
+                    columns, names=["from", "to"]
+                )
+
+        index = rows["index"]
+        N = len(index)
+        if N > 0:
+            try:
+                float(index[0])
+                index = pd.Index(index, name="index")
+            except ValueError:
+                index = pd.DatetimeIndex(index)
+                index.name = "timeindex"
+
+        vals = np.array(rows["values"]).reshape((N, M))
+        df = pd.DataFrame(data=vals, columns=columns, index=index)
+
+        df.to_csv(out_csv)
 
         # Ensure encoding is set to utf-8 in metadata
         res["encoding"] = "utf-8"
