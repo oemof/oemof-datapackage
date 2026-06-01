@@ -1,5 +1,5 @@
-import tempfile
 import json
+import tempfile
 from pathlib import Path
 
 import oemof.datapackage.datapackage as datapackage
