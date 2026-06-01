@@ -34,10 +34,24 @@ def test_conversion_dp_to_json():
     # check the resources are the same in both dictionaries
     assert set(dict_export["data"].keys()) == set(dict_export2["data"].keys())
 
-    # compare the json
-    formatted1 = json.dumps(json.loads(json_export), sort_keys=True)
-    formatted2 = json.dumps(json.loads(json_export2), sort_keys=True)
-    assert formatted1 == formatted2
+    # compare the json' data
+    data_formatted1 = json.dumps(
+        json.loads(json_export)["data"], sort_keys=True
+    )
+    data_formatted2 = json.dumps(
+        json.loads(json_export2)["data"], sort_keys=True
+    )
+    assert (
+        data_formatted1 == data_formatted2
+    ), "The data of source file and the round converted file do not match"
 
-
-test_conversion_dp_to_json()
+    # compare the json' metadata
+    metadata_formatted1 = json.dumps(
+        json.loads(json_export)["metadata"], sort_keys=True
+    )
+    metadata_formatted2 = json.dumps(
+        json.loads(json_export2)["metadata"], sort_keys=True
+    )
+    assert (
+        metadata_formatted1 == metadata_formatted2
+    ), "The metadata of source file and the round converted file do not match"
