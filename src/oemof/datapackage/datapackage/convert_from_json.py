@@ -14,6 +14,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+from dateutil.parser import parse as date_parse
 
 
 def safe_join(base: Path, rel: Union[str, Path]) -> Path:
@@ -103,28 +104,36 @@ def rebuild_dp_from_json(
             out_csv.parent.mkdir(parents=True, exist_ok=True)
 
         columns = rows["columns_names"]
+        index = rows["index"]
         M = len(columns)
+        N = len(index)
         if M > 0:
             if isinstance(columns[0], list):
-                columns = pd.MultiIndex.from_tuples(
-                    columns, names=["from", "to"]
-                )
+                columns = pd.MultiIndex.from_tuples(columns)
+            if N > 0:
+                try:
+                    date_parse(index[0], fuzzy=True)
+                    index = pd.DatetimeIndex(index)
+                    index.name = "timeindex"
+                except ValueError:
+                    index = pd.Index(index, name="index")
+                vals = np.array(rows["values"]).reshape((N, M))
+                df = pd.DataFrame(data=vals, columns=columns, index=index)
+                df.replace("nan", "").to_csv(out_csv)
+            else:
+                # The resource does not have an index, inferring the number of rows
+                vals = np.array(rows["values"])
+                N = int(len(vals) / M)
+                vals = vals.reshape((N, M))
+                df = pd.DataFrame(data=vals, columns=columns)
+                df.replace("nan", "").to_csv(out_csv, index=False)
+        else:
+            if N > 0:
+                pd.DataFrame(index=index).to_csv(out_csv)
+            else:
 
-        index = rows["index"]
-        N = len(index)
-        if N > 0:
-            try:
-                float(index[0])
-                index = pd.Index(index, name="index")
-            except ValueError:
-                index = pd.DatetimeIndex(index)
-                index.name = "timeindex"
-
-        vals = np.array(rows["values"]).reshape((N, M))
-        df = pd.DataFrame(data=vals, columns=columns, index=index)
-
-        df.to_csv(out_csv)
-
+                with open(out_csv, "w") as fp:
+                    fp.writelines([])
         # Ensure encoding is set to utf-8 in metadata
         res["encoding"] = "utf-8"
         updated_resources.append(res)
