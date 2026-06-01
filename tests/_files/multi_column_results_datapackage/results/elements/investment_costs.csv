@@ -1,0 +1,2 @@
+index,"(""<oemof.eesyplan.facades.production.PvPlant.PvPlant: 'PV plant'>"", <CarrierBus 'PV DC bus' carrier='Electricity'>)","(""<oemof.eesyplan.facades.converters.ElectricalTransformator.ElectricalTransformator: 'Solar inverter'>"", <CarrierBus 'Electricity bus' carrier='Electricity'>)"
+0,72461.12750726343,0.0
