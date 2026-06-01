@@ -7,7 +7,7 @@ import oemof.datapackage.datapackage as datapackage
 TEST_FILES = Path(__file__).parent / "_files"
 
 
-def test_conversion_dp_to_json():
+def test_conversion_dp_to_json_and_back_to_dp():
     """`
     Test that a datapackage can be converted to json format and back to a datapackage without alteration
     """
@@ -18,11 +18,11 @@ def test_conversion_dp_to_json():
     dict_export = json.loads(json_export)
 
     with tempfile.TemporaryDirectory() as temp_dp:
-        df_from_json_path = datapackage.rebuild_dp_from_json(
+        dp_from_json_path = datapackage.rebuild_dp_from_json(
             dict_export, Path(temp_dp)
         )
 
-        json_export2 = datapackage.export_dp_to_json(df_from_json_path)
+        json_export2 = datapackage.export_dp_to_json(dp_from_json_path)
 
     dict_export2 = json.loads(json_export2)
 
