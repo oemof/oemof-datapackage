@@ -405,7 +405,8 @@ def infer_metadata(
             )
             for i, col_name in enumerate(df.columns):
                 logging.info(
-                    f'{r.descriptor["schema"]["fields"][i]["name"]} replaced by {col_name}'
+                    f'{r.descriptor["schema"]["fields"][i]["name"]} '
+                    f"replaced by {col_name}"
                 )
                 r.descriptor["schema"]["fields"][i]["name"] = col_name
             r.commit()
@@ -578,8 +579,7 @@ def input_filepath(file, directory="archive/"):
     file_path = os.path.join(directory, file)
 
     if not os.path.exists(file_path):
-        raise FileNotFoundError(
-            """File with name
+        raise FileNotFoundError("""File with name
 
             {}
 
@@ -587,10 +587,7 @@ def input_filepath(file, directory="archive/"):
             the sources listed and store it in the directory:
 
             {}.
-            """.format(
-                file_path, directory
-            )
-        )
+            """.format(file_path, directory))
 
     return file_path
 
