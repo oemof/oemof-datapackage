@@ -16,6 +16,7 @@ Fixes
 * MultiIndexError in postprocessing if more than 2 oemof nodes are given `#174 <https://github.com/oemof/oemof-tabular/issues/174>`_
 * Updated dependencies for datapackage and tableschema
 * Error due to "fake" foreign keys in datapackage resources
+* Remove attributes, value pairs for which the value is None before instantiating a facade, otherwise the default values defined within the facade are not used.
 
 
 0.0.5 Patch Release - Miraculous Mary (2024-02-23)
