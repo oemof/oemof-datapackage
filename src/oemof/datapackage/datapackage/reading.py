@@ -12,6 +12,7 @@ along with how to use the functions in this module.
 
 import collections.abc as cabc
 import json
+import logging
 import os
 import re
 import typing
@@ -351,6 +352,17 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         """Creates an instance of `clsi` and sets `attributes`."""
         init.update(attributes)
 
+        # remove the attribute with a value of None as default is provided for all optional attributes
+        arguments_to_default = []
+        for k, v in init.items():
+            if v is None:
+                arguments_to_default.append(k)
+
+        if arguments_to_default:
+            logging.warning(
+                f"Removing the following attributes of the initialisation of the facade: {','.join(arguments_to_default)}"
+            )
+            init.pop(*arguments_to_default)
         init.pop("type")  # if Facades class no longer exists
         # only remap the argument of the classes which inherit from Node
         if issubclass(clsi, Node):
