@@ -183,7 +183,7 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
                         "format": "csv",
                         "dialect": {
                             "header": True,
-                            "headerRows": header_rows,
+                            "headerRows": [0],
                         },
                     }
                 )

@@ -92,10 +92,14 @@ def export_dp_to_json(
 
     - ``"metadata"``: the original ``datapackage.json``
       content (``pkg`` as provided)
-    - ``"data"``: a dict with the following keys: "index", "column_names" and "values"
-        "values" is a list of length N*M, where N is the number of rows and M the number of columns of the resource
-         if "index" is an empty list, the number of rows is inferred from the number of columns and the length of the
-         "values". If column_names contains lists or tuples, then the columns of the resource are a MultiIndex.
+    - ``"data"``: a dict with the following keys: "index", "column_names"
+       and "values"
+        "values" is a list of length N*M, where N is the number of rows
+        and M the number of columns of the resource
+         if "index" is an empty list, the number of rows is inferred from
+         the number of columns and the length of the "values".
+         If column_names contains lists or tuples, then the columns of
+         the resource are a MultiIndex.
 
     If a resource’s ``path`` is a list (multi-file resource), rows from all
     files are concatenated into the same list for that resource.

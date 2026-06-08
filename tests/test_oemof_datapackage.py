@@ -25,7 +25,8 @@ def test_project_name():
 
 def test_conversion_dp_to_json_and_back_to_dp():
     """`
-    Test that a datapackage can be converted to json format and back to a datapackage without alteration
+    Test that a datapackage can be converted to json format and back to a
+    datapackage without alteration
     """
 
     dp_path = TEST_FILES / "example_datapackage"

@@ -9,7 +9,8 @@ TEST_FILES = Path(__file__).parent / "_files"
 
 def test_conversion_dp_to_json_and_back_to_dp():
     """`
-    Test that a datapackage can be converted to json format and back to a datapackage without alteration
+    Test that a result datapackage can be converted to json format
+    and back to a datapackage without alteration
     """
 
     dp_path = TEST_FILES / "multi_column_results_datapackage"

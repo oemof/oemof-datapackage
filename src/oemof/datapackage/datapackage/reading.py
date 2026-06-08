@@ -352,7 +352,8 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         """Creates an instance of `clsi` and sets `attributes`."""
         init.update(attributes)
 
-        # remove the attribute with a value of None as default is provided for all optional attributes
+        # remove the attribute with a value of None as default is provided
+        # for all optional attributes
         arguments_to_default = []
         for k, v in init.items():
             if v is None:
@@ -360,9 +361,11 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
 
         if arguments_to_default:
             logging.warning(
-                f"Removing the following attributes of the initialisation of the facade: {','.join(arguments_to_default)}"
+                f"Removing the following attributes of the initialisation "
+                f"of the facade: {','.join(arguments_to_default)}"
             )
             init.pop(*arguments_to_default)
+        # TODO PF keep the type
         init.pop("type")  # if Facades class no longer exists
         # only remap the argument of the classes which inherit from Node
         if issubclass(clsi, Node):
