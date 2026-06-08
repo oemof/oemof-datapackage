@@ -352,7 +352,8 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         """Creates an instance of `clsi` and sets `attributes`."""
         init.update(attributes)
 
-        # remove the attribute with a value of None as default is provided for all optional attributes
+        # remove the attribute with a value of None as default is provided
+        # for all optional attributes
         arguments_to_default = []
         for k, v in init.items():
             if v is None:
@@ -360,9 +361,11 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
 
         if arguments_to_default:
             logging.warning(
-                f"Removing the following attributes of the initialisation of the facade: {','.join(arguments_to_default)}"
+                f"Removing the following attributes of the initialisation "
+                f"of the facade: {','.join(arguments_to_default)}"
             )
             init.pop(*arguments_to_default)
+        # TODO PF keep the type
         init.pop("type")  # if Facades class no longer exists
         # only remap the argument of the classes which inherit from Node
         if issubclass(clsi, Node):
@@ -552,6 +555,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         facade
         """
 
+        # TODO @PF pay attention to this with our own names
         yearly_values = ["fixed_costs", "marginal_costs"]
         periodical_values = [
             "capacity",
@@ -651,6 +655,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
     # TODO: Find concept how to deal with timeindices and clean up based on
     # concept
     lst = [idx for idx in timeindices.values()]
+    # import pdb;pdb.set_trace()
     if lst[1:] == lst[:-1]:
         # look for temporal resource and if present, take as timeindex from it
         if package.get_resource("temporal"):
@@ -673,6 +678,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
         # if no temporal provided as resource, take the first timeindex
         # from dict
         else:
+            # TODO @PF here is the period of the ES set
             # look for periods resource and if present, take periods from it
             if package.get_resource("periods"):
                 es = cls(

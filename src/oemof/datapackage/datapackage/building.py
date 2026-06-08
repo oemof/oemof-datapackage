@@ -405,9 +405,8 @@ def infer_metadata(
             )
             for i, col_name in enumerate(df.columns):
                 logging.info(
-                    r.descriptor["schema"]["fields"][i]["name"],
-                    "replaced by ",
-                    col_name,
+                    f'{r.descriptor["schema"]["fields"][i]["name"]} '
+                    f"replaced by {col_name}"
                 )
                 r.descriptor["schema"]["fields"][i]["name"] = col_name
             r.commit()

@@ -1,0 +1,118 @@
+{
+    "name": "oemof_solph_results",
+    "profile": "tabular-data-package",
+    "resources": [
+        {
+            "name": "total",
+            "path": "results/elements/total.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0,
+                    1
+                ]
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "Solver",
+            "path": "results/elements/Solver.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": false
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "flow",
+            "path": "results/sequences/flow.csv",
+            "kind": "sequence",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0,
+                    1
+                ]
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "Solution",
+            "path": "results/elements/Solution.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": false
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "Problem",
+            "path": "results/elements/Problem.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": false
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "investment_costs",
+            "path": "results/elements/investment_costs.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0
+                ]
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "invest",
+            "path": "results/elements/invest.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0,
+                    1
+                ]
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "variable_costs",
+            "path": "results/elements/variable_costs.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0,
+                    1
+                ]
+            },
+            "encoding": "utf-8"
+        },
+        {
+            "name": "objective",
+            "path": "results/elements/objective.csv",
+            "kind": "element",
+            "format": "csv",
+            "dialect": {
+                "header": true,
+                "headerRows": [
+                    0
+                ]
+            },
+            "encoding": "utf-8"
+        }
+    ]
+}

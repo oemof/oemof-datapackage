@@ -1,0 +1,7 @@
+from,Electricity bus,Electricity bus,PV DC bus,PV plant,Solar inverter,"('internal_bus', 'DSO')","('internal_bus', 'DSO')","('feedin_converter', 'DSO')","('consumption_converter', 'DSO')","('consumption_source', 'DSO')"
+to,Community electricity demand,"('feedin_converter', 'DSO')",Solar inverter,PV DC bus,Electricity bus,"('feedin_sink', 'DSO')","('consumption_converter', 'DSO')","('internal_bus', 'DSO')",Electricity bus,"('internal_bus', 'DSO')"
+index,,,,,,,,,,
+0,0.0,-0.0,-0.0,0.0,-0.0,0.0,0.0,0.0,19.1066368,0.0
+1,0.0,-0.0,-0.0,0.0,-0.0,0.0,0.0,0.0,16.8280976,0.0
+2,0.0,-0.0,-0.0,0.0,-0.0,0.0,0.0,0.0,14.6959448,0.0
+3,0.0,-0.0,-0.0,0.0,-0.0,0.0,0.0,0.0,13.5121224,0.0

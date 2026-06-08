@@ -11,6 +11,8 @@ from typing import Any
 from typing import Dict
 from typing import List
 
+import pandas as pd
+
 
 def resource_paths(package_dir: Path, resource: Dict[str, Any]) -> List[Path]:
     p = resource.get("path")
@@ -78,7 +80,8 @@ def csv_reader_for_resource(
 
 
 def export_dp_to_json(
-    package_dir: Path, out_dir: Path = None, no_headers: bool = False
+    package_dir: Path,
+    out_dir: Path = None,
 ):
     """
     Export a Frictionless Data Package (CSV resources) into a single JSON file.
@@ -89,8 +92,14 @@ def export_dp_to_json(
 
     - ``"metadata"``: the original ``datapackage.json``
       content (``pkg`` as provided)
-    - ``"data"``: a mapping of ``{resource_name: [row, row, ...]}`` where
-      each row is a dict produced by ``csv.DictReader``
+    - ``"data"``: a dict with the following keys: "index", "column_names"
+       and "values"
+        "values" is a list of length N*M, where N is the number of rows
+        and M the number of columns of the resource
+         if "index" is an empty list, the number of rows is inferred from
+         the number of columns and the length of the "values".
+         If column_names contains lists or tuples, then the columns of
+         the resource are a MultiIndex.
 
     If a resource’s ``path`` is a list (multi-file resource), rows from all
     files are concatenated into the same list for that resource.
@@ -102,10 +111,6 @@ def export_dp_to_json(
         referenced by it.
     out_dir : pathlib.Path
         Destination directory; will be created if it does not exist.
-    no_headers : bool, optional
-        If True, treat CSVs as lacking a header row and use field names from
-        ``resource.schema.fields[*].name`` (when available). If False
-        (default), header is taken from the first line of each CSV.
 
     Returns
     -------
@@ -116,10 +121,6 @@ def export_dp_to_json(
 
     Notes
     -----
-    - CSV reading respects per-resource options if present:
-      ``resource.encoding`` and basic dialect fields in ``resource.dialect``
-      such as ``delimiter``, ``quoteChar``/``quotechar``, ``doubleQuote``, and
-       ``escapeChar``.
     - All JSON is written as UTF-8, with ``ensure_ascii=False`` and pretty
       indentation.
     - This function loads all rows into memory; for very large datasets
@@ -134,8 +135,6 @@ def export_dp_to_json(
         resolution.
     UnicodeDecodeError
         If a file cannot be decoded with the specified encoding.
-    csv.Error
-        If the CSV is malformed.
     OSError
         For general I/O errors while reading or writing files.
 
@@ -165,16 +164,50 @@ def export_dp_to_json(
                 else "resource"
             ).stem
         )
-        rows: List[Dict[str, Any]] = []
+        if "dialect" not in res:
+            header_rows = [0]
+            res["dialect"] = {"header": True, "headerRows": header_rows}
+        else:
+            header_rows = res["dialect"].get("headerRows", [0])
+
+        rows = {"index": [], "columns_names": [], "values": []}
         paths = resource_paths(package_dir, res)
         for p in paths:
-            encoding = res.get("encoding", "utf-8")
-            with p.open("r", encoding=encoding, newline="") as inf:
-                reader = csv_reader_for_resource(
-                    inf, res, force_schema_headers=no_headers
+            try:
+                df = pd.read_csv(
+                    p,
+                    header=header_rows,
+                    index_col=0,
+                    parse_dates=[0],
+                    na_values="",
                 )
-                for row in reader:
-                    rows.append({str(k): v for k, v in row.items()})
+                N = len(df.index)
+
+                if df.index.dtype == "str" or df.index.name not in (
+                    "index",
+                    "timeindex",
+                ):
+                    df.reset_index(inplace=True)
+                    index = []
+                else:
+                    index = [str(idx) for idx in df.index.values]
+
+                M = len(df.columns)
+
+                if isinstance(df.columns, pd.MultiIndex):
+                    cols = [list(c) for c in df.columns]
+                else:
+                    cols = list(df.columns)
+
+                values = df.values.reshape((M * N,)).tolist()
+
+                rows = {
+                    "index": index,
+                    "columns_names": cols,
+                    "values": values,
+                }
+            except pd.errors.EmptyDataError:
+                print(p, "was empty")
         data[name] = rows
 
     if out_dir is not None:

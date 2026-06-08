@@ -2,41 +2,25 @@ import json
 import tempfile
 from pathlib import Path
 
-import oemof.solph
-
-import oemof.datapackage
 import oemof.datapackage.datapackage as datapackage
 
 TEST_FILES = Path(__file__).parent / "_files"
 
 
-def test_version_specification():
-    """`
-    oemof.datapackage`'s version specification is importable and a string.
-    """
-    assert isinstance(oemof.datapackage.__version__, str)
-    assert isinstance(oemof.solph.__version__, str)
-
-
-def test_project_name():
-    """`oemof.datapackage`'s project name is importable and correct."""
-    assert oemof.datapackage.__project__ == "oemof.datapackage"
-
-
 def test_conversion_dp_to_json_and_back_to_dp():
     """`
-    Test that a datapackage can be converted to json format and back to a
-    datapackage without alteration
+    Test that a result datapackage can be converted to json format
+    and back to a datapackage without alteration
     """
 
-    dp_path = TEST_FILES / "example_datapackage"
+    dp_path = TEST_FILES / "multi_column_results_datapackage"
 
     json_export = datapackage.export_dp_to_json(dp_path)
     dict_export = json.loads(json_export)
 
     with tempfile.TemporaryDirectory() as temp_dp:
         dp_from_json_path = datapackage.rebuild_dp_from_json(
-            dict_export, Path(temp_dp), overwrite=True
+            dict_export, Path(temp_dp)
         )
 
         json_export2 = datapackage.export_dp_to_json(dp_from_json_path)
