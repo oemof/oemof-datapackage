@@ -66,9 +66,9 @@ def _export_df_resource(
     df.to_csv(fpath)
 
     if isinstance(df.columns, pd.MultiIndex):
-        header_rows = df.columns.nlevels
+        header_rows = list(range(df.columns.nlevels))
     else:
-        header_rows = 1
+        header_rows = [0]
 
     resources.append(
         {
@@ -76,7 +76,10 @@ def _export_df_resource(
             "path": f"{rel_prefix}/{fname}",
             "kind": kind,
             "format": "csv",
-            "header_rows": header_rows,
+            "dialect": {
+                "header": True,
+                "headerRows": header_rows,
+            },
         }
     )
 
@@ -178,7 +181,10 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
                         "path": "results/elements/objective.csv",
                         "kind": "element",
                         "format": "csv",
-                        "header_rows": 1,
+                        "dialect": {
+                            "header": True,
+                            "headerRows": [0],
+                        },
                     }
                 )
                 continue
@@ -201,7 +207,9 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
                     "path": f"results/elements/{fname}",
                     "kind": "element",
                     "format": "csv",
-                    "header_rows": 0,
+                    "dialect": {
+                        "header": False,
+                    },
                 }
             )
             continue
