@@ -160,7 +160,7 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
     resources: List[Dict[str, Any]] = []
 
     for key in results.keys():
-        value = results[key]
+        value = results.get(key, pd.DataFrame())
 
         # Sonderfall: objective
         if key == "objective":
