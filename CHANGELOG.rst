@@ -17,6 +17,7 @@ Fixes
 * Updated dependencies for datapackage and tableschema
 * Error due to "fake" foreign keys in datapackage resources
 * Remove attributes, value pairs for which the value is None before instantiating a facade, otherwise the default values defined within the facade are not used.
+* The parameters with value `None` are popped out of the argument list to a component in the `create` fonction within the reading.py module
 
 
 0.0.5 Patch Release - Miraculous Mary (2024-02-23)

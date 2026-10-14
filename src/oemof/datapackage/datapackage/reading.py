@@ -364,7 +364,8 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
                 f"Removing the following attributes of the initialisation "
                 f"of the facade: {','.join(arguments_to_default)}"
             )
-            init.pop(*arguments_to_default)
+            for argument in arguments_to_default:
+                init.pop(argument)
         # TODO PF keep the type
         init.pop("type")  # if Facades class no longer exists
         # only remap the argument of the classes which inherit from Node
