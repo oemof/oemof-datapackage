@@ -695,8 +695,7 @@ def deserialize_energy_system(cls, path, typemap=None, attributemap=None):
                 timeindex = pd.DatetimeIndex(
                     idx.values, freq=idx.inferred_freq, name="timeindex"
                 )
-                temporal = None
-                es = cls(timeindex=timeindex, periods=temporal)
+                es = cls(timeindex=timeindex, infer_last_interval=True)
             # if for any reason lst of datetimeindices is empty
             # (i.e. no sequences) have been provided, set datetime to one time
             # step of today (same as in the EnergySystem __init__ if no
