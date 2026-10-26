@@ -162,7 +162,19 @@ def _export_results_to_dir(results: Any, base_path: Path) -> None:
 
     resources: List[Dict[str, Any]] = []
 
+
+    if hasattr(results, "solver"):
+        df = _to_dataframe(results.solver)
+        if df is None:
+            pass
+        else:
+            _export_df_resource(df, "solver", results_root, resources)
+
+
     for key in results.keys():
+        if key in ["Solver", "Problem", "Solution"]:
+            continue
+
         value = results.get(key, pd.DataFrame())
 
         # Sonderfall: objective

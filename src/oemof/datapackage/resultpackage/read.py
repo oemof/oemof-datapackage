@@ -25,6 +25,7 @@ class ImportResults:
 
     def __init__(self, base_path: str | Path):
         self.base_path = Path(base_path)
+        self.solver = None
         self._data: Dict[str, Any] = {}
         self._timeindex: pd.Index | None = None
 
@@ -78,6 +79,15 @@ class ImportResults:
                 df = pd.DataFrame([])
 
             self._data[key] = df
+
+        # Sonderfall: 'solver' (case-insensitive) → squeeze auf self.solver
+        for key in list(self._data.keys()):
+            if key.lower() == "solver":
+                value = self._data.pop(key)
+                if isinstance(value, pd.DataFrame):
+                    value = value.squeeze()
+                self.solver = value
+                break
 
         # timeindex: nimm den Index des ersten DataFrames mit DatetimeIndex
         for v in self._data.values():
