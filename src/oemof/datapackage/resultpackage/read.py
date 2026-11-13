@@ -43,7 +43,8 @@ class ImportResults:
             key = res["name"]
             rel_path = res["path"]
             kind = res.get("kind", "element")  # 'sequence' oder 'element'
-            header_rows = res["dialect"].get("headerRows", [0])
+            if kind != "typemap":
+                header_rows = res["dialect"].get("headerRows", [0])
 
             fpath = self.base_path / rel_path
 
@@ -65,6 +66,12 @@ class ImportResults:
                         self._data["objective"] = float(val)
                     except Exception:
                         self._data["objective"] = None
+                continue
+
+            if key == "component_type_mapping":
+                with fpath.open("r", encoding="utf-8") as f:
+                    typemap = json.load(f)
+                    self._data["component_type_mapping"] = typemap
                 continue
 
             # sequences: Index als Datum parsen
