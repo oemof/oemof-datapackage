@@ -187,42 +187,46 @@ def export_dp_to_json(
         rows = {"index": [], "columns_names": [], "values": []}
         paths = resource_paths(package_dir, res)
         for p in paths:
-            try:
-                df = pd.read_csv(
-                    p,
-                    header=header_rows,
-                    index_col=0,
-                    parse_dates=[0],
-                    na_values="",
-                )
-                N = len(df.index)
+            if p.suffix.lower() == ".csv":
+                try:
+                    df = pd.read_csv(
+                        p,
+                        header=header_rows,
+                        index_col=0,
+                        parse_dates=[0],
+                        na_values="",
+                    )
+                    N = len(df.index)
 
-                if df.index.dtype == "str" or df.index.name not in (
-                    "index",
-                    "timeindex",
-                ):
-                    df.reset_index(inplace=True)
-                    index = []
-                else:
-                    index = [str(idx) for idx in df.index.values]
+                    if df.index.dtype == "str" or df.index.name not in (
+                        "index",
+                        "timeindex",
+                    ):
+                        df.reset_index(inplace=True)
+                        index = []
+                    else:
+                        index = [str(idx) for idx in df.index.values]
 
-                M = len(df.columns)
+                    M = len(df.columns)
 
-                if isinstance(df.columns, pd.MultiIndex):
-                    cols = [list(c) for c in df.columns]
-                else:
-                    cols = list(df.columns)
+                    if isinstance(df.columns, pd.MultiIndex):
+                        cols = [list(c) for c in df.columns]
+                    else:
+                        cols = list(df.columns)
 
-                values = df.values.reshape((M * N,)).tolist()
+                    values = df.values.reshape((M * N,)).tolist()
 
-                rows = {
-                    "index": index,
-                    "columns_names": cols,
-                    "values": normalize_for_json(values),
-                }
+                    rows = {
+                        "index": index,
+                        "columns_names": cols,
+                        "values": normalize_for_json(values),
+                    }
 
-            except pd.errors.EmptyDataError:
-                print(p, "was empty")
+                except pd.errors.EmptyDataError:
+                    print(p, "was empty")
+            elif p.suffix.lower() == ".json":
+                with p.open("r") as fp:
+                    rows = json.load(fp)
         data[name] = rows
 
     if out_dir is not None:
