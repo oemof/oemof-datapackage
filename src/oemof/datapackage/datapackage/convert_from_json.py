@@ -101,38 +101,47 @@ def rebuild_dp_from_json(
         else:
             out_csv.parent.mkdir(parents=True, exist_ok=True)
 
-        columns = rows["columns_names"]
-        index = rows["index"]
-        M = len(columns)
-        N = len(index)
-        if M > 0:
-            if isinstance(columns[0], list):
-                columns = pd.MultiIndex.from_tuples(columns)
-            if N > 0:
-                try:
-                    date_parse(index[0], fuzzy=True)
-                    index = pd.DatetimeIndex(index)
-                    index.name = "timeindex"
-                except ValueError:
-                    index = pd.Index(index, name="index")
-                vals = np.array(rows["values"]).reshape((N, M))
-                df = pd.DataFrame(data=vals, columns=columns, index=index)
-                df.replace("nan", "").to_csv(out_csv)
+        if res["format"] == "csv":
+            columns = rows["columns_names"]
+            index = rows["index"]
+            M = len(columns)
+            N = len(index)
+            if M > 0:
+                if isinstance(columns[0], list):
+                    columns = pd.MultiIndex.from_tuples(columns)
+                if N > 0:
+                    try:
+                        date_parse(index[0], fuzzy=True)
+                        index = pd.DatetimeIndex(index)
+                        index.name = "timeindex"
+                    except ValueError:
+                        index = pd.Index(index, name="index")
+                    vals = np.array(rows["values"]).reshape((N, M))
+                    df = pd.DataFrame(data=vals, columns=columns, index=index)
+                    df.replace("nan", "").to_csv(out_csv)
+                else:
+                    # The resource does not have an index, inferring the
+                    # number of rows
+                    vals = np.array(rows["values"])
+                    N = int(len(vals) / M)
+                    vals = vals.reshape((N, M))
+                    df = pd.DataFrame(data=vals, columns=columns)
+                    df.replace("nan", "").to_csv(out_csv, index=False)
             else:
-                # The resource does not have an index, inferring the
-                # number of rows
-                vals = np.array(rows["values"])
-                N = int(len(vals) / M)
-                vals = vals.reshape((N, M))
-                df = pd.DataFrame(data=vals, columns=columns)
-                df.replace("nan", "").to_csv(out_csv, index=False)
-        else:
-            if N > 0:
-                pd.DataFrame(index=index).to_csv(out_csv)
-            else:
+                if N > 0:
+                    pd.DataFrame(index=index).to_csv(out_csv)
+                else:
 
-                with open(out_csv, "w") as fp:
-                    fp.writelines([])
+                    with out_csv.open("w") as fp:
+                        fp.writelines([])
+        elif res["format"] == "json":
+            with out_csv.open("w", encoding="utf-8") as fp:
+                json.dump(rows, fp)
+        else:
+            raise TypeError(
+                f"The format {res['format']} is not supported "
+                f"by oemof.datapackage.datapackage.convert_from_json"
+            )
         # Ensure encoding is set to utf-8 in metadata
         res["encoding"] = "utf-8"
         updated_resources.append(res)
